@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+
+  database_mariadb_01:
+    image: mariadb:11.1.2
+    container_name: database-mariadb-01
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_PASSWORD=123456
+      - VIRTUAL_PORT=3306
+      - TERM=xterm
+    volumes:
+      - ./backup:/backup
+      - ./data/mariadb_01:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - database_mariadb_network
+
+  database_pma_01:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    container_name: database-pma-01
+    restart: always
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+      - PMA_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_PASSWORD=123456
+      - VIRTUAL_PORT=8080
+      - TERM=xterm
+    links:
+      - "database_mariadb_01:mariadb"
+    ports:
+      - "8080:80"
+    networks:
+      - database_mariadb_network
+
+networks:
+  database_mariadb_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.0.0/24
+          gateway: 172.10.0.1
