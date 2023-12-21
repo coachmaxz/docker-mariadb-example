@@ -3,7 +3,7 @@ version: '3.9'
 services:
 
   database_mariadb_01:
-    image: mariadb:11.1.2
+    image: mariadb:11.2.2
     container_name: database-mariadb-01
     restart: always
     environment:
@@ -25,7 +25,7 @@ services:
     restart: always
     environment:
       - PMA_ARBITRARY=1
-      - PMA_HOST=mariadb
+      - PMA_HOST=database_mariadb_01
       - PMA_USER=root
       - PMA_PASSWORD=123456
       - MYSQL_ROOT_PASSWORD=123456
@@ -45,5 +45,5 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.10.0.0/24
-          gateway: 172.10.0.1
+        - subnet: 172.11.0.0/24
+          gateway: 172.11.0.1
